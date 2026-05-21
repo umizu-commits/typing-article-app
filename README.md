@@ -273,3 +273,8 @@ JS部分（タイピング処理）の実装
 ・1文字単位の入力監視と正誤判定
 ・タイピング速度（WPM）のリアルタイム計算
 ・DOM更新のタイミング設計（過剰レンダリング防止）
+
+画面遷移図
+
+[Figmaで画面遷移図を表示]
+(https://www.figma.com/design/5tNlfa32FMDMPGhxLlFkgK/typing-article-app?node-id=0-1&p=f&t=4c9dWNEz6CjlFku2-0)
