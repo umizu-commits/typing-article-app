@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "App" %></title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title><%= content_for(:title) || "ReadTyping" %></title>
+    <meta name="viewport" content="width=1280">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -18,8 +18,18 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <main class="container mx-auto mt-28 px-5 flex">
+  <body class="bg-slate-50 min-w-[1280px]">
+    <nav class="fixed top-0 w-full bg-white border-b border-gray-200 z-10">
+      <div class="container mx-auto px-5 h-14 flex items-center justify-between">
+        <span class="text-blue-600 font-bold text-lg">ReadTyping</span>
+        <% if user_signed_in? %>
+          <%= link_to "ログアウト", destroy_user_session_path, data: { turbo_method: :delete }, class:"bg-blue-600 text-white px-4 py-2 rounded-lg text-sm" %>
+        <% else %>
+          <%= link_to "Login", new_user_session_path, class: "bg-blue-600 text-white px-4 py-2 rounded-lg text-sm" %>
+        <% end %>
+      </div>
+    </nav>
+    <main class="container mx-auto mt-16 px-5">
       <%= yield %>
     </main>
   </body>
