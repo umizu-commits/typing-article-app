@@ -31,6 +31,8 @@ export default class extends Controller {
     this.isStarted = false
     // タイピング開始時は先頭の文字から判定する
     this.currentIndex = 0
+
+    this.skipNonTypableChars()
   }
 
   // キーが押されたときの処理
@@ -58,8 +60,8 @@ export default class extends Controller {
       spans[this.currentIndex].className = "text-gray-400"
       this.currentIndex++
     }
+    this.skipNonTypableChars()
   }
-
 
   // リセットボタンのイベントハンドラ
   reset() {
@@ -71,8 +73,20 @@ export default class extends Controller {
       span.className = ""
     })
 
+    this.skipNonTypableChars()
+
     this.hintTarget.classList.remove("hidden")
     this.timerTarget.textContent = "00:00"
     this.inputTarget.focus()
+  }
+
+  // 現在の入力位置がスペースや改行の場合、入力済み扱いにして次の文字へ進める
+  skipNonTypableChars() {
+    while (
+      this.currentIndex < this.chars.length &&
+      (this.chars[this.currentIndex] === " " || this.chars[this.currentIndex] === "\n")
+    ) {
+      this.currentIndex++
+    }
   }
 }
