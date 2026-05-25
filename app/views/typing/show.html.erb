@@ -1,0 +1,34 @@
+<div data-controller="typing" class="h-[calc(100vh-128px)] overflow-hidden py-3">
+  <div class="grid h-full grid-cols-[1fr_320px] gap-6 overflow-hidden">
+    <%# テキスト表示エリア %>
+    <section class="overflow-hidden rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+      <p
+        data-typing-target="text"
+        class="h-full overflow-auto whitespace-pre-wrap text-lg font-semibold leading-relaxed text-gray-800"
+      ></p>
+    </section>
+
+    <%# 右側エリア %>
+    <aside class="flex h-full flex-col items-end justify-between overflow-hidden">
+      <div class="w-[260px] rounded-xl bg-white p-4 text-center shadow-sm">
+        <div class="text-xs font-bold text-gray-500">
+          経過時間
+        </div>
+
+        <div
+          data-typing-target="timer"
+          class="mt-1 font-mono text-2xl font-bold text-gray-900"
+        >
+          00:00
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="w-[260px] rounded-full bg-blue-400 px-6 py-3 font-bold text-white shadow-sm hover:bg-blue-500"
+      >
+        タイピングを終了する →
+      </button>
+    </aside>
+  </div>
+</div>

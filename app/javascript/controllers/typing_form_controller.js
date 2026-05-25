@@ -25,7 +25,7 @@ submit(event) {
     }
 
     sessionStorage.setItem("typing_text", text)
-    window.location.href = "/typing"  // タイピングページ実装後に正しいパスに変更
+    window.location.href = "/typing"
 }
 
 showError(message) {
