@@ -29,37 +29,43 @@ export default class extends Controller {
 
     // 最初の入力でタイマーを開始するため、開始状態を未開始にしておく
     this.isStarted = false
+    // タイピング開始時は先頭の文字から判定する
+    this.currentIndex = 0
   }
 
-  handleInput() {
+  // キーが押されたときの処理
+  // Enterキーを無効にする部分
+  handleKeydown(event) {
+    if (event.key === "Enter") {
+      event.preventDefault()
+    }
+    // ShiftやCtrlなどを無視する部分
+    if (event.key.length !== 1) return
+
     // 最初の入力時だけ、開始済みにしてヒントを非表示にする
     if (!this.isStarted) {
       this.isStarted = true
       this.hintTarget.classList.add("hidden")
     }
 
-    const typed = [...this.inputTarget.value]
+    // 入力されたキーと期待される文字を取得する部分
+    const key = event.key // event.key は押されたキーの文字を返す（例: "a": Key A)
+    const expectedChar = this.chars[this.currentIndex] // 本来入力してほしい文字
 
-    this.textTarget.querySelectorAll("span").forEach((span, index) => {
-      if (typed[index] === this.chars[index]) {
-        span.className = "text-gray-400" // 正しい文字は薄いグレーに
-      } else {
-        span.className = "" // 間違っている文字はデフォルトのスタイルに
-      }
-    })
-  }
-
-  // Enterキーのデフォルト動作をキャンセルするイベントハンドラ
-  handleKeydown(event) {
-    if (event.key === "Enter") {
-      event.preventDefault()
+    // 入力されたキーが期待される文字と一致する場合、次の文字に進む
+    if (key === expectedChar) {
+      const spans = this.textTarget.querySelectorAll("span")
+      spans[this.currentIndex].className = "text-gray-400"
+      this.currentIndex++
     }
   }
+
 
   // リセットボタンのイベントハンドラ
   reset() {
     this.inputTarget.value = ""
     this.isStarted = false
+    this.currentIndex = 0
 
     this.textTarget.querySelectorAll("span").forEach(span => {
       span.className = ""
