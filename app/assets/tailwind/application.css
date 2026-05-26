@@ -1,1 +1,12 @@
 @import "tailwindcss";
+
+@keyframes blink {
+    0%, 100% { text-decoration-color: rgb(128 128 128); }
+    50% { text-decoration-color: transparent; }
+}
+
+.cursor-blink {
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    animation: blink 1s step-start infinite;
+}

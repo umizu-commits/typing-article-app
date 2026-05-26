@@ -39,15 +39,22 @@ export default class extends Controller {
     this.isCompleted = false
 
     this.skipNonTypableChars()
+
+    //現在地にカーソルを表示する
+    this.updateCursor()
   }
 
   // キーが押されたときの処理
   // Enterキーを無効にする部分
   handleKeydown(event) {
+    // textareaへの文字蓄積を防ぐ
+    event.preventDefault() // デフォルトのキー入力を無効にする
+
     if (this.isCompleted) return // タイピング完了後はキー入力を無視する
     if (event.key === "Enter") {
       event.preventDefault()
     }
+
     // ShiftやCtrlなどを無視する部分
     if (event.key.length !== 1) return
     //スペースキーは無視する
@@ -64,17 +71,19 @@ export default class extends Controller {
     const expectedChar = this.chars[this.currentIndex] // 本来入力してほしい文字
 
     // 入力されたキーが期待される文字と一致する場合、次の文字に進む
+    const spans = this.textTarget.querySelectorAll("span")
     if (key === expectedChar) {
-      const spans = this.textTarget.querySelectorAll("span")
       spans[this.currentIndex].className = "text-gray-400"
       this.currentIndex++
       this.skipNonTypableChars()
+      this.updateCursor()
 
       if (this.currentIndex >= this.chars.length) {
         this.isCompleted = true // タイピング完了のフラグを立てる
       }
     } else {
       this.missCount++ // ミスをカウントする
+      spans[this.currentIndex].className = "text-red-500"
     }
   }
 
@@ -91,7 +100,7 @@ export default class extends Controller {
     })
 
     this.skipNonTypableChars()
-
+    this.updateCursor()
     this.hintTarget.classList.remove("hidden")
     this.timerTarget.textContent = "00:00"
     this.inputTarget.focus()
@@ -110,5 +119,12 @@ export default class extends Controller {
   //テキストエリア部分をクリックするとフォーカスが戻る
   focusInput() {
     this.inputTarget.focus()
+  }
+
+  // 現在地にカーソルを表示する
+  updateCursor() {
+    if (this.currentIndex >= this.chars.length) return // タイピング完了後はカーソルを表示しない
+    const spans = this.textTarget.querySelectorAll("span")
+    spans[this.currentIndex].className = "cursor-blink"
   }
 }
