@@ -32,17 +32,26 @@ export default class extends Controller {
     // タイピング開始時は先頭の文字から判定する
     this.currentIndex = 0
 
+    // ミスのカウント
+    this.missCount = 0
+
+    // タイピング完了のフラグ
+    this.isCompleted = false
+
     this.skipNonTypableChars()
   }
 
   // キーが押されたときの処理
   // Enterキーを無効にする部分
   handleKeydown(event) {
+    if (this.isCompleted) return // タイピング完了後はキー入力を無視する
     if (event.key === "Enter") {
       event.preventDefault()
     }
     // ShiftやCtrlなどを無視する部分
     if (event.key.length !== 1) return
+    //スペースキーは無視する
+    if (event.key === " ") return
 
     // 最初の入力時だけ、開始済みにしてヒントを非表示にする
     if (!this.isStarted) {
@@ -59,8 +68,14 @@ export default class extends Controller {
       const spans = this.textTarget.querySelectorAll("span")
       spans[this.currentIndex].className = "text-gray-400"
       this.currentIndex++
+      this.skipNonTypableChars()
+
+      if (this.currentIndex >= this.chars.length) {
+        this.isCompleted = true // タイピング完了のフラグを立てる
+      }
+    } else {
+      this.missCount++ // ミスをカウントする
     }
-    this.skipNonTypableChars()
   }
 
   // リセットボタンのイベントハンドラ
@@ -68,6 +83,8 @@ export default class extends Controller {
     this.inputTarget.value = ""
     this.isStarted = false
     this.currentIndex = 0
+    this.missCount = 0
+    this.isCompleted = false
 
     this.textTarget.querySelectorAll("span").forEach(span => {
       span.className = ""
@@ -88,5 +105,10 @@ export default class extends Controller {
     ) {
       this.currentIndex++
     }
+  }
+
+  //テキストエリア部分をクリックするとフォーカスが戻る
+  focusInput() {
+    this.inputTarget.focus()
   }
 }
