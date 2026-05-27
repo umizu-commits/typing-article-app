@@ -35,8 +35,19 @@ export default class extends Controller {
     // ミスのカウント
     this.missCount = 0
 
+    // 正解数のカウント
+    this.correctCount = 0
+
     // タイピング完了のフラグ
     this.isCompleted = false
+
+    // タイマー用の状態
+    this.timerId = null
+    this.startTime = null
+    this.elapsedMilliseconds = 0
+    this.elapsedSeconds = 0
+    this.timerTarget.textContent = "00:00"
+
 
     this.skipNonTypableChars()
 
@@ -69,6 +80,7 @@ export default class extends Controller {
     // 最初の入力時だけ、開始済みにしてヒントを非表示にする
     if (!this.isStarted) {
       this.isStarted = true
+      this.startTimer()
       this.hintTarget.classList.add("hidden")
     }
 
@@ -81,11 +93,13 @@ export default class extends Controller {
     if (key === expectedChar) {
       spans[this.currentIndex].className = "text-gray-400"
       this.currentIndex++
+      this.correctCount++
       this.skipNonTypableChars()
       this.updateCursor()
 
       if (this.currentIndex >= this.chars.length) {
         this.isCompleted = true // タイピング完了のフラグを立てる
+        this.stopTimer()
       }
     } else {
       this.missCount++ // ミスをカウントする
@@ -95,10 +109,13 @@ export default class extends Controller {
 
   // リセットボタンのイベントハンドラ
   reset() {
+    this.resetTimer()
+
     this.inputTarget.value = ""
     this.isStarted = false
     this.currentIndex = 0
     this.missCount = 0
+    this.correctCount = 0
     this.isCompleted = false
 
     this.textTarget.querySelectorAll("span").forEach(span => {
@@ -108,7 +125,6 @@ export default class extends Controller {
     this.skipNonTypableChars()
     this.updateCursor()
     this.hintTarget.classList.remove("hidden")
-    this.timerTarget.textContent = "00:00"
     this.inputTarget.focus()
   }
 
@@ -135,6 +151,13 @@ export default class extends Controller {
   }
 
 
+  handleCompositionStart() {
+    if (this.isStarted) return
+    this.isStarted = true
+    this.startTimer()
+    this.hintTarget.classList.add("hidden")
+  }
+
   handleCompositionEnd(event) {
     if (this.isCompleted) return
 
@@ -146,22 +169,93 @@ export default class extends Controller {
 
       if (!this.isStarted) {
         this.isStarted = true
+        this.startTimer()
         this.hintTarget.classList.add("hidden")
       }
 
       if (char === this.chars[this.currentIndex]) {
         spans[this.currentIndex].className = "text-gray-400"
         this.currentIndex++
+        this.correctCount++
         this.skipNonTypableChars()
         this.updateCursor()
 
         if (this.currentIndex >= this.chars.length) {
-          this.isCompleted =ture
+          this.isCompleted = true
+          this.stopTimer()
         }
       } else {
         this.missCount++
         spans[this.currentIndex].className = "text-red-500"
       }
     }
+  }
+
+  // タイマーを開始する
+  startTimer() {
+    if (this.timerId) return
+
+    this.startTime = performance.now()
+    this.elapsedMilliseconds = 0
+    this.elapsedSeconds = 0
+
+    this.updateTimer()
+
+    this.timerId = setInterval(() => {
+      this.updateTimer()
+    }, 100)
+  }
+
+  // 経過時間を計算して、画面の表示を更新する
+  updateTimer() {
+    this.elapsedMilliseconds = performance.now() - this.startTime
+    this.elapsedSeconds = Math.floor(this.elapsedMilliseconds / 1000)
+
+    const minutes = Math.floor(this.elapsedSeconds / 60).toString().padStart(2, "0")
+    const secs = (this.elapsedSeconds % 60).toString().padStart(2, "0")
+
+    this.timerTarget.textContent = `${minutes}:${secs}`
+  }
+
+  // 動いているタイマーを停止する
+  stopTimer() {
+    if (!this.timerId) return
+
+    this.updateTimer()
+    clearInterval(this.timerId)
+    this.timerId = null
+  }
+
+  // タイマーを停止して、表示と値を初期状態に戻す
+  resetTimer() {
+    this.stopTimer()
+
+    this.startTime = null
+    this.elapsedMilliseconds = 0
+    this.elapsedSeconds = 0
+    this.timerTarget.textContent = "00:00"
+  }
+
+  // 画面遷移などでコントローラが外れたときにタイマーを止める
+  disconnect() {
+    this.stopTimer()
+  }
+
+  // 正答率 = correctCount / (correctCount + missCount) * 100
+  calculateAccuracy() {
+    const total = this.correctCount + this.missCount
+    if (total === 0) return 0
+    return Math.round((this.correctCount / total) * 100)
+  }
+
+  // 文字/分 (CPM) = correctCount / (elapsedSeconds / 60)
+  calculateCpm() {
+    if (this.elapsedSeconds === 0) return 0
+    return Math.round(this.correctCount / (this.elapsedSeconds / 60))
+  }
+
+  // WPM目安（補助指標） WPM = CPM / 5
+  calculateWpm() {
+    return Math.round(this.calculateCpm() / 5)
   }
 }
