@@ -100,6 +100,7 @@ export default class extends Controller {
       if (this.currentIndex >= this.chars.length) {
         this.isCompleted = true // タイピング完了のフラグを立てる
         this.stopTimer()
+        this.saveResult()
       }
     } else {
       this.missCount++ // ミスをカウントする
@@ -183,6 +184,7 @@ export default class extends Controller {
         if (this.currentIndex >= this.chars.length) {
           this.isCompleted = true
           this.stopTimer()
+          this.saveResult()
         }
       } else {
         this.missCount++
@@ -257,5 +259,18 @@ export default class extends Controller {
   // WPM目安（補助指標） WPM = CPM / 5
   calculateWpm() {
     return Math.round(this.calculateCpm() / 5)
+  }
+
+  // 完了時に結果をsessionStorageへ保存する
+  saveResult() {
+    const result = {
+      correctCount: this.correctCount,
+      missCount: this.missCount,
+      elapsedSeconds: this.elapsedSeconds,
+      accuracy: this.calculateAccuracy(),
+      cpm: this.calculateCpm(),
+      wpm: this.calculateWpm()
+    }
+    sessionStorage.setItem("typing_result", JSON.stringify(result))
   }
 }
