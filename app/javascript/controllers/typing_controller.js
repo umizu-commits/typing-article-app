@@ -45,20 +45,26 @@ export default class extends Controller {
   }
 
   // キーが押されたときの処理
-  // Enterキーを無効にする部分
   handleKeydown(event) {
-    // textareaへの文字蓄積を防ぐ
-    event.preventDefault() // デフォルトのキー入力を無効にする
 
-    if (this.isCompleted) return // タイピング完了後はキー入力を無視する
+    // IME変換中はすべてスキップ
+    if (event.isComposing) return
+
+    // Enterキーを無効にする部分
     if (event.key === "Enter") {
       event.preventDefault()
+      return
     }
 
     // ShiftやCtrlなどを無視する部分
     if (event.key.length !== 1) return
     //スペースキーは無視する
     if (event.key === " ") return
+
+    // textareaへの文字蓄積を防ぐ
+    event.preventDefault() // デフォルトのキー入力を無効にする
+
+    if (this.isCompleted) return
 
     // 最初の入力時だけ、開始済みにしてヒントを非表示にする
     if (!this.isStarted) {
@@ -126,5 +132,36 @@ export default class extends Controller {
     if (this.currentIndex >= this.chars.length) return // タイピング完了後はカーソルを表示しない
     const spans = this.textTarget.querySelectorAll("span")
     spans[this.currentIndex].className = "cursor-blink"
+  }
+
+
+  handleCompositionEnd(event) {
+    if (this.isCompleted) return
+
+    const composed = [...event.data]
+    const spans = this.textTarget.querySelectorAll("span")
+
+    for (const char of composed) {
+      if (this.isCompleted) break
+
+      if (!this.isStarted) {
+        this.isStarted = true
+        this.hintTarget.classList.add("hidden")
+      }
+
+      if (char === this.chars[this.currentIndex]) {
+        spans[this.currentIndex].className = "text-gray-400"
+        this.currentIndex++
+        this.skipNonTypableChars()
+        this.updateCursor()
+
+        if (this.currentIndex >= this.chars.length) {
+          this.isCompleted =ture
+        }
+      } else {
+        this.missCount++
+        spans[this.currentIndex].className = "text-red-500"
+      }
+    }
   }
 }
