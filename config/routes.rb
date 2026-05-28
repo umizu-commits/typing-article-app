@@ -16,4 +16,7 @@ Rails.application.routes.draw do
   get "/typing", to: "typing#show"
 
   get "/typing/result", to: "typing#result"
+
+  # 結果をDBに保存するためのエンドポイント
+  post "/typing/results", to: "typing#save_result"
 end
