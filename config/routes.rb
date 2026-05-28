@@ -17,6 +17,9 @@ Rails.application.routes.draw do
 
   get "/typing/result", to: "typing#result"
 
+  # 履歴一覧画面へ遷移
+  get "/typing/histories", to: "typing_histories#index"
+
   # 結果をDBに保存するためのエンドポイント
   post "/typing/results", to: "typing#save_result"
 end

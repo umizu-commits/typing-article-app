@@ -1,0 +1,133 @@
+<div class="py-8 max-w-4xl mx-auto">
+
+  <%# タイトル %>
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold text-gray-800">タイピング履歴</h1>
+    <p class="text-sm text-gray-500 mt-1">これまでの学習成果を確認して、スキルの向上をトラックしましょう。</p>
+  </div>
+
+  <%# サマリーカード（全件を対象に集計） %>
+  <% if @all_typing_results.any? %>
+    <div class="grid grid-cols-5 gap-4 mb-8">
+      <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+        <div class="text-xs text-gray-500 mb-2">平均WPM</div>
+        <div class="text-2xl font-bold text-gray-900"><%= @all_typing_results.average(:wpm).to_f.round(1) %></div>
+      </div>
+
+      <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+        <div class="text-xs text-gray-500 mb-2">平均CPM</div>
+        <div class="text-2xl font-bold text-gray-900"><%= (@all_typing_results.average(:wpm).to_f * 5).round(1) %></div>
+      </div>
+
+      <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+        <div class="text-xs text-gray-500 mb-2">平均正確率</div>
+        <div class="text-2xl font-bold text-gray-900"><%= @all_typing_results.average(:accuracy).to_f.round(1) %>%</div>
+      </div>
+
+      <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+        <div class="text-xs text-gray-500 mb-2">総練習時間</div>
+        <% total_seconds = @all_typing_results.sum(:elapsed_time) %>
+        <% hours = total_seconds / 3600 %>
+        <% minutes = (total_seconds % 3600) / 60 %>
+        <div class="text-2xl font-bold text-gray-900">
+          <% if hours > 0 %>
+            <%= hours %>h <%= minutes %>m
+          <% else %>
+            <%= minutes %>m
+          <% end %>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+        <div class="text-xs text-gray-500 mb-2">完了セッション</div>
+        <div class="text-2xl font-bold text-gray-900"><%= @all_typing_results.count %> 回</div>
+      </div>
+    </div>
+  <% end %>
+
+  <%# 履歴テーブル %>
+  <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+    <% if @typing_results.empty? %>
+      <div class="p-10 text-center text-sm text-gray-500">
+        まだ履歴がありません
+      </div>
+    <% else %>
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-gray-200">
+            <th class="text-left px-5 py-3 text-xs font-bold text-gray-500">実施日時</th>
+            <th class="text-right px-5 py-3 text-xs font-bold text-gray-500">WPM</th>
+            <th class="text-right px-5 py-3 text-xs font-bold text-gray-500">CPM</th>
+            <th class="text-right px-5 py-3 text-xs font-bold text-gray-500">正確率</th>
+            <th class="text-right px-5 py-3 text-xs font-bold text-gray-500">ミス数</th>
+            <th class="text-right px-5 py-3 text-xs font-bold text-gray-500">時間</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @typing_results.each do |result| %>
+            <tr class="border-b border-gray-100 last:border-0 hover:bg-gray-50 h-8">
+              <td class="px-5 py-1 text-gray-700">
+                <%= result.created_at.strftime("%Y-%m-%d %H:%M") %>
+              </td>
+              <td class="px-5 py-1 text-right font-bold text-blue-500">
+                <%= result.wpm %>
+              </td>
+              <td class="px-5 py-1 text-right font-bold text-blue-400">
+                <%= result.wpm * 5 %>
+              </td>
+              <td class="px-5 py-1 text-right">
+                <span class="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs font-bold">
+                  <%= result.accuracy %>%
+                </span>
+              </td>
+              <td class="px-5 py-1 text-right font-bold <%= result.miss_count > 5 ? 'text-red-500' : 'text-gray-900' %>">
+                <%= result.miss_count %>
+              </td>
+              <td class="px-5 py-1 text-right text-gray-700">
+                <%= "%02d:%02d" % [result.elapsed_time / 60, result.elapsed_time % 60] %>
+              </td>
+            </tr>
+          <% end %>
+          <%# 10件未満のページで高さを維持するための空行 %>
+          <% (10 - @typing_results.size).times do %>
+            <tr class="border-b border-gray-100 last:border-0">
+              <td class="px-5 py-4" colspan="6"></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+
+      <div class="px-5 py-3 border-t border-gray-100 text-xs text-gray-400 text-center">
+        全 <%= @typing_results.total_count %> セッション中 <%= @typing_results.offset_value + 1 %>-<%= [@typing_results.offset_value + 10, @typing_results.total_count].min %> を表示中
+      </div>
+      <% if @typing_results.total_pages > 1 %>
+        <div class="px-5 py-3 border-t border-gray-100 flex justify-center items-center gap-1">
+          <%# 前へ %>
+          <% if @typing_results.prev_page %>
+            <%= link_to "前へ", typing_histories_path(page: @typing_results.prev_page),
+                class: "px-3 h-8 flex items-center justify-center rounded text-gray-600 hover:text-blue-500 hover:bg-blue-50 text-xs font-medium" %>
+          <% end %>
+
+          <%# ページ番号 %>
+          <% (1..@typing_results.total_pages).each do |page_num| %>
+            <% if page_num == @typing_results.current_page %>
+              <span class="w-8 h-8 flex items-center justify-center rounded bg-blue-500 text-white text-xs font-bold">
+                <%= page_num %>
+              </span>
+            <% else %>
+              <%= link_to page_num, typing_histories_path(page: page_num),
+                  class: "w-8 h-8 flex items-center justify-center rounded text-gray-600 hover:text-blue-500 hover:bg-blue-50 text-xs font-medium" %>
+            <% end %>
+          <% end %>
+
+          <%# 次へ %>
+          <% if @typing_results.next_page %>
+            <%= link_to "次へ", typing_histories_path(page: @typing_results.next_page),
+                class: "px-3 h-8 flex items-center justify-center rounded text-gray-600 hover:text-blue-500 hover:bg-blue-50 text-xs font-medium" %>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+
+</div>

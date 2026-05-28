@@ -23,7 +23,7 @@
         <%= link_to "ReadTyping", root_path, class: "text-blue-600 font-bold text-lg" %>
         <nav class="flex items-center gap-3">
           <% if user_signed_in? %>
-            <%= link_to "履歴", "#", class: "text-gray-600 text-sm hover:text-blue-600" %>
+            <%= link_to "履歴", typing_histories_path, class: "text-gray-600 text-sm hover:text-blue-600" %>
             <%= link_to "ログアウト", destroy_user_session_path, data: { turbo_method: :delete }, class: "bg-blue-600 text-white px-4 py-2 rounded-lg text-sm" %>
           <% else %>
             <%= link_to "新規登録", new_user_registration_path, class: "text-gray-600 text-sm hover:text-blue-600" %>

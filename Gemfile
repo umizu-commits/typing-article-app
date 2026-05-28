@@ -66,3 +66,5 @@ gem "rubocop", "~> 1.86", groups: [ :development, :test ]
 gem "rubocop-rails", "~> 2.35", groups: [ :development, :test ]
 
 gem "tailwindcss-rails", "~> 4.4"
+
+gem "kaminari"
