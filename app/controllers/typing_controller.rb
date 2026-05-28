@@ -9,7 +9,7 @@ class TypingController < ApplicationController
     def save_result
         # 未ログインならスキップ
         unless user_signed_in?
-            render json: { status: "skipped"}
+            render json: { status: "skipped" }
             return
         end
 
@@ -26,7 +26,7 @@ class TypingController < ApplicationController
         if result.persisted?
             render json: { status: "saved" }
         else
-            render json: { status: "failed"}
+            render json: { status: "failed" }
         end
     end
 end
