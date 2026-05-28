@@ -11,9 +11,7 @@
 
       <textarea
         data-typing-target="input"
-        data-action="keydown->typing#handleKeydown
-                              compositionstart->typing#handleCompositionStart
-                              compositionend->typing#handleCompositionEnd"
+        data-action="keydown->typing#handleKeydown compositionend->typing#handleCompositionEnd"
         class="absolute opacity-0"
         autocomplete="off"
         spellcheck="false"></textarea>
@@ -45,14 +43,15 @@
         data-action="click->typing#reset"
         class="w-[260px] rounded-full bg-white border border-gray-300 px-6 py-3 font-bold text-gray-700 shadow-sm hover:bg-gray-50">
         再挑戦する
-        </button>
+      </button>
 
       <button
         type="button"
-        class="w-[260px] rounded-full bg-blue-400 px-6 py-3 font-bold text-white shadow-sm hover:bg-blue-500"
-      >
-        タイピングを終了する →
+        data-action="click->typing#endPractice"
+        class="w-[260px] rounded-full bg-blue-400 px-6 py-3 font-bold text-white shadow-sm hover:bg-blue-500">
+        タイピングを終了する
       </button>
+
     </aside>
   </div>
 </div>
