@@ -56,13 +56,14 @@
     </div>
 
     <%# フッター CTA %>
+          <% unless user_signed_in? %>
     <div class="text-center mt-8">
       <div class="inline-block bg-white border border-gray-200 rounded-full px-6 py-2 text-sm
   text-gray-600">
         練習結果を保存して成長をグラフ化しませんか？
-        <%= link_to "今すぐログイン・新規登録", new_user_session_path, class: "text-blue-600 font-bold
-   ml-1" %>
+        <%= link_to "今すぐログイン・新規登録", new_user_session_path, class: "text-blue-600 font-bold ml-1" %>
       </div>
     </div>
+  <% end %>
 
   </div>
