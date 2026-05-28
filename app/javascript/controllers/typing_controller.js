@@ -101,6 +101,7 @@ export default class extends Controller {
         this.isCompleted = true // タイピング完了のフラグを立てる
         this.stopTimer()
         this.saveResult()
+        window.location.href = "/typing/result" // 完了時に自動で結果画面へ遷移する
       }
     } else {
       this.missCount++ // ミスをカウントする
@@ -185,6 +186,7 @@ export default class extends Controller {
           this.isCompleted = true
           this.stopTimer()
           this.saveResult()
+          window.location.href = "/typing/result"
         }
       } else {
         this.missCount++
@@ -272,5 +274,12 @@ export default class extends Controller {
       wpm: this.calculateWpm()
     }
     sessionStorage.setItem("typing_result", JSON.stringify(result))
+  }
+
+  // 途中で終了しても結果画面へ
+  endPractice() {
+    this.stopTimer()
+    this.saveResult()
+    window.location.href = "/typing/result"
   }
 }

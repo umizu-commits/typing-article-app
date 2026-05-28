@@ -1,0 +1,75 @@
+<div data-controller="result" class="py-10 px-4">
+
+  <%# 完了メッセージ %>
+  <div class="text-center mb-10">
+    <div class="text-5xl mb-4">🏆</div>
+    <h1 class="text-2xl font-bold text-gray-800 mb-2">練習完了！お疲れ様でした。</h1>
+    <p class="text-sm text-gray-500">タイピングを最後まで完了しました。</p>
+  </div>
+
+  <%# 結果スタッツ %>
+  <div class="flex justify-center gap-4 mb-8 max-w-4xl mx-auto">
+    <div class="flex-1 rounded-xl border border-gray-200 bg-white p-5 text-center shadow-sm">
+      <div class="text-xs font-bold text-gray-400 mb-2">正答率</div>
+      <div data-result-target="accuracy" class="text-3xl font-bold text-gray-900">--%</div>
+    </div>
+
+    <div class="flex-1 rounded-xl border border-gray-200 bg-white p-5 text-center shadow-sm">
+      <div class="text-xs font-bold text-gray-400 mb-2">文字/分</div>
+      <div data-result-target="cpm" class="text-3xl font-bold text-gray-900">--</div>
+    </div>
+
+    <div class="flex-1 rounded-xl border border-gray-200 bg-white p-5 text-center shadow-sm">
+      <div class="text-xs font-bold text-gray-400 mb-2">WPM目安</div>
+      <div data-result-target="wpm" class="text-3xl font-bold text-gray-900">--</div>
+    </div>
+
+    <div class="flex-1 rounded-xl border border-gray-200 bg-white p-5 text-center shadow-sm">
+      <div class="text-xs font-bold text-gray-400 mb-2">経過時間</div>
+      <div data-result-target="elapsedTime" class="text-3xl font-bold text-gray-900">--:--</div>
+    </div>
+
+    <div class="flex-1 rounded-xl border border-gray-200 bg-white p-5 text-center shadow-sm">
+      <div class="text-xs font-bold text-gray-400 mb-2">ミス数</div>
+      <div data-result-target="missCount" class="text-3xl font-bold text-gray-900">--</div>
+    </div>
+  </div>
+
+  <%# ナビゲーションボタン %>
+  <div class="flex justify-center gap-3 mb-8">
+    <%= link_to "同じテキストで再度練習", typing_path,
+        class: "rounded-full bg-white border border-gray-300 px-6 py-3 font-bold text-gray-700 shadow-sm hover:bg-gray-50" %>
+
+    <button
+      type="button"
+      data-action="click->result#goToTop"
+      class="rounded-full bg-white border border-gray-300 px-6 py-3 font-bold text-gray-700 shadow-sm hover:bg-gray-50">
+      異なるテキストで練習
+    </button>
+
+    <span class="rounded-full bg-gray-100 px-6 py-3 font-bold text-gray-400 cursor-not-allowed">
+      履歴を見る（準備中）
+    </span>
+  </div>
+
+  <%# ログインCTA %>
+  <% if user_signed_in? %>
+    <div class="max-w-2xl mx-auto rounded-xl bg-green-50 border border-green-200 p-4 text-center text-sm text-green-700">
+      この結果はあなたの履歴に保存されます
+    </div>
+  <% else %>
+    <div class="max-w-2xl mx-auto rounded-xl bg-blue-50 border border-blue-200 p-5 flex items-center justify-between gap-4">
+      <div>
+        <p class="font-bold text-gray-800">タイピングの成長を記録しませんか？</p>
+        <p class="text-xs text-gray-500 mt-1">ログインすると結果が保存され、履歴を確認できます</p>
+      </div>
+      <div class="flex gap-2 shrink-0">
+        <%= link_to "ログイン", new_user_session_path,
+            class: "rounded-full bg-blue-400 px-5 py-2 font-bold text-white text-sm hover:bg-blue-500" %>
+        <%= link_to "新規登録", new_user_registration_path,
+            class: "rounded-full bg-white border border-blue-400 px-5 py-2 font-bold text-blue-500 text-sm hover:bg-blue-50" %>
+      </div>
+    </div>
+  <% end %>
+
+</div>
