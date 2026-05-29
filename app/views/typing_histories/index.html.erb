@@ -65,8 +65,8 @@
         </thead>
         <tbody>
           <% @typing_results.each do |result| %>
-            <tr class="border-b border-gray-100 last:border-0 hover:bg-gray-50 h-8">
-              <td class="px-5 py-1 text-gray-700">
+            <tr class="border-b border-gray-100 last:border-0 hover:bg-gray-50">
+              <td class="px-5 py-2 text-gray-700">
                 <%= result.created_at.strftime("%Y-%m-%d %H:%M") %>
               </td>
               <td class="px-5 py-1 text-right font-bold text-blue-500">
@@ -91,7 +91,7 @@
           <%# 10件未満のページで高さを維持するための空行 %>
           <% (10 - @typing_results.size).times do %>
             <tr class="border-b border-gray-100 last:border-0">
-              <td class="px-5 py-4" colspan="6"></td>
+              <td class="px-5 py-2" colspan="6">&nbsp;</td>
             </tr>
           <% end %>
         </tbody>
