@@ -150,6 +150,11 @@ export default class extends Controller {
     if (this.currentIndex >= this.chars.length) return // タイピング完了後はカーソルを表示しない
     const spans = this.textTarget.querySelectorAll("span")
     spans[this.currentIndex].className = "cursor-blink"
+
+    // textareaの位置を更新する処理
+    const rect = spans[this.currentIndex].getBoundingClientRect()
+    this.inputTarget.style.top = `${rect.top + rect.height}px`
+    this.inputTarget.style.left = `${rect.left}px`
   }
 
 
@@ -193,6 +198,7 @@ export default class extends Controller {
         spans[this.currentIndex].className = "text-red-500"
       }
     }
+    this.inputTarget.value = "" // 1回の変換確定後にtextareaをクリアすることで、次の変換開始時にカーソルが先頭に戻る
   }
 
   // タイマーを開始する
