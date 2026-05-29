@@ -6,6 +6,7 @@ export default class extends Controller {
     connect() {
         const raw = sessionStorage.getItem("typing_result")
 
+        // sessionStorageに結果がない場合はトップページに戻す（直接アクセス防止）
         if (!raw) {
             window.location.href = "/"
             return
@@ -19,11 +20,11 @@ export default class extends Controller {
         this.missCountTarget.textContent = result.missCount
         this.elapsedTimeTarget.textContent = this.formatTime(result.elapsedSeconds)
 
-        // fetchのPOST送信
         const csrfToken = document.querySelector('meta[name="csrf-token"]').content
         // fetchより前にarticle_text の取得
         const articleText = sessionStorage.getItem("typing_text")
 
+        // fetchのPOST送信
         fetch("/typing/results", {
             method: "POST",
             headers: {
@@ -52,7 +53,7 @@ export default class extends Controller {
         return `${m}:${s}`
     }
 
-    // sessionStrageの削除を行ってから、TOPページに遷移する
+    // sessionStorageの削除を行ってから、TOPページに遷移する
     goToTop() {
         sessionStorage.removeItem("typing_text")
         sessionStorage.removeItem("typing_result")
