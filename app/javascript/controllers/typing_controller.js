@@ -165,6 +165,8 @@ export default class extends Controller {
     this.hintTarget.classList.add("hidden")
   }
 
+  // IMEの確定時に呼ばれる
+  // handleKeydownは isComposing 中にスキップされるため、日本語入力の判定はこちらで処理する
   handleCompositionEnd(event) {
     if (this.isCompleted) return
 

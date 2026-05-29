@@ -11,7 +11,7 @@
 
       <textarea
         data-typing-target="input"
-        data-action="keydown->typing#handleKeydown compositionend->typing#handleCompositionEnd"
+        data-action="keydown->typing#handleKeydown compositionstart->typing#handleCompositionStart compositionend->typing#handleCompositionEnd"
         class="fixed opacity-0 w-full h-px overflow-hidden resize-none"
         autocomplete="off"
         spellcheck="false"></textarea>
