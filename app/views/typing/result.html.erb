@@ -47,8 +47,10 @@
       異なるテキストで練習
     </button>
 
-    <%= link_to "履歴を見る", typing_histories_path,
-        class: "rounded-full bg-white border border-gray-300 px-6 py-3 font-bold text-gray-700 shadow-sm hover:bg-gray-50" %>
+    <% if user_signed_in? %>
+      <%= link_to "履歴を見る", typing_histories_path,
+          class: "rounded-full bg-white border border-gray-300 px-6 py-3 font-bold text-gray-700 shadow-sm hover:bg-gray-50" %>
+    <% end %>
   </div>
 
   <%# 保存結果メッセージ %>
