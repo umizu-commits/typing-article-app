@@ -1,4 +1,3 @@
-// Stimulus コントローラーの登録
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
