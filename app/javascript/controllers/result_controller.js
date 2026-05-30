@@ -12,6 +12,15 @@ export default class extends Controller {
             return
         }
 
+        // タイピング完了後の初回アクセス以外はリダイレクト（直接アクセス防止）
+        const fromTyping = sessionStorage.getItem("result_from_typing")
+        if (!fromTyping) {
+            window.location.href = "/"
+            return
+        }
+
+        sessionStorage.removeItem("result_from_typing") // フラグは初回のみ使用
+
         const result = JSON.parse(raw)
 
         this.accuracyTarget.textContent = `${result.accuracy}%`
@@ -21,7 +30,6 @@ export default class extends Controller {
         this.elapsedTimeTarget.textContent = this.formatTime(result.elapsedSeconds)
 
         const csrfToken = document.querySelector('meta[name="csrf-token"]').content
-        // fetchより前にarticle_text の取得
         const articleText = sessionStorage.getItem("typing_text")
 
         // fetchのPOST送信

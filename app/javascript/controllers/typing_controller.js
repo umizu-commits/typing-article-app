@@ -282,6 +282,7 @@ export default class extends Controller {
       wpm: this.calculateWpm()
     }
     sessionStorage.setItem("typing_result", JSON.stringify(result))
+    sessionStorage.setItem("result_from_typing", "true")
   }
 
   // 途中で終了しても結果画面へ
