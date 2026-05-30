@@ -10,17 +10,17 @@
   <% if @all_typing_results.any? %>
     <div class="grid grid-cols-6 gap-4 mb-8">
 
-      <%# 平均WPM %>
+      <%# 平均正答率 %>
       <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
         <div class="flex items-center gap-2 mb-3">
           <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-            <svg class="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            <svg class="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <div class="text-xs font-bold text-gray-500">平均WPM</div>
+          <div class="text-xs font-bold text-gray-500">平均正答率</div>
         </div>
-        <div class="text-2xl font-bold text-gray-900 text-center"><%= @all_typing_results.average(:wpm).to_f.round(1) %></div>
+        <div class="text-2xl font-bold text-gray-900 text-center"><%= @all_typing_results.average(:accuracy).to_f.round(1) %>%</div>
       </div>
 
       <%# 平均CPM %>
@@ -36,17 +36,30 @@
         <div class="text-2xl font-bold text-gray-900 text-center"><%= (@all_typing_results.average(:wpm).to_f * 5).round(1) %></div>
       </div>
 
-      <%# 平均正確率 %>
+      <%# 平均WPM %>
       <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
         <div class="flex items-center gap-2 mb-3">
           <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-            <svg class="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg class="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
           </div>
-          <div class="text-xs font-bold text-gray-500">平均正確率</div>
+          <div class="text-xs font-bold text-gray-500">平均WPM</div>
         </div>
-        <div class="text-2xl font-bold text-gray-900 text-center"><%= @all_typing_results.average(:accuracy).to_f.round(1) %>%</div>
+        <div class="text-2xl font-bold text-gray-900 text-center"><%= @all_typing_results.average(:wpm).to_f.round(1) %></div>
+      </div>
+
+      <%# 平均ミス回数 %>
+      <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+        <div class="flex items-center gap-2 mb-3">
+          <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
+            <svg class="w-4 h-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <div class="text-xs font-bold text-gray-500">平均ミス回数</div>
+        </div>
+        <div class="text-2xl font-bold text-gray-900 text-center"><%= @all_typing_results.average(:miss_count).to_f.round(1) %></div>
       </div>
 
       <%# 総練習時間 %>
@@ -69,19 +82,6 @@
             <%= minutes %>m
           <% end %>
         </div>
-      </div>
-
-      <%# 平均ミス回数 %>
-      <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
-        <div class="flex items-center gap-2 mb-3">
-          <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
-            <svg class="w-4 h-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-          </div>
-          <div class="text-xs font-bold text-gray-500">平均ミス回数</div>
-        </div>
-        <div class="text-2xl font-bold text-gray-900 text-center"><%= @all_typing_results.average(:miss_count).to_f.round(1) %></div>
       </div>
 
       <%# 完了セッション %>
@@ -111,11 +111,11 @@
         <thead>
           <tr class="border-b border-gray-200">
             <th class="text-left px-5 py-3 text-xs font-bold text-gray-500">実施日時</th>
-            <th class="text-right px-5 py-3 text-xs font-bold text-gray-500">WPM</th>
+            <th class="text-right px-5 py-3 text-xs font-bold text-gray-500">正答率</th>
             <th class="text-right px-5 py-3 text-xs font-bold text-gray-500">CPM</th>
-            <th class="text-right px-5 py-3 text-xs font-bold text-gray-500">正確率</th>
+            <th class="text-right px-5 py-3 text-xs font-bold text-gray-500">WPM</th>
             <th class="text-right px-5 py-3 text-xs font-bold text-gray-500">ミス数</th>
-            <th class="text-right px-5 py-3 text-xs font-bold text-gray-500">時間</th>
+            <th class="text-right px-5 py-3 text-xs font-bold text-gray-500">タイム</th>
           </tr>
         </thead>
         <tbody>
@@ -124,16 +124,16 @@
               <td class="px-5 py-2 text-gray-700">
                 <%= result.created_at.strftime("%Y-%m-%d %H:%M") %>
               </td>
-              <td class="px-5 py-1 text-right font-bold text-blue-500">
-                <%= result.wpm %>
-              </td>
-              <td class="px-5 py-1 text-right font-bold text-blue-400">
-                <%= result.wpm * 5 %>
-              </td>
               <td class="px-5 py-1 text-right">
                 <span class="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs font-bold">
                   <%= result.accuracy %>%
                 </span>
+              </td>
+              <td class="px-5 py-1 text-right font-bold text-blue-400">
+                <%= result.wpm * 5 %>
+              </td>
+              <td class="px-5 py-1 text-right font-bold text-blue-500">
+                <%= result.wpm %>
               </td>
               <td class="px-5 py-1 text-right font-bold <%= result.miss_count > 5 ? 'text-red-500' : 'text-gray-900' %>">
                 <%= result.miss_count %>
